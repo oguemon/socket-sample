@@ -22,11 +22,13 @@ if ($result === false) {
 
 do {
     $in = readline('> ');
+
+    //$in = hex2bin("f0f1f2f3f4f5");
+    socket_write($socket, $in, strlen($in));
+
     if (trim($in) == 'quit') {
         break;
     }
-    //$in = hex2bin("f0f1f2f3f4f5");
-    socket_write($socket, $in, strlen($in));
 
     $buf = socket_read($socket, 2048);
     if ($buf === false) {
