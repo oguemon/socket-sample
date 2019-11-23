@@ -90,11 +90,29 @@ do {
                 break 2;
             }
 
-            // 受信文字列を出力
-            echo "$buf\n";
+            // 送信文字列を作る
+            $talkback = '';
+            switch ($buf) {
+                case 'a':
+                    $talkback = 'b';
+                    break;
+                case 'b':
+                    $talkback = 'c';
+                    break;
+                case 'c':
+                    $talkback = 'd';
+                    break;
+                case 'd':
+                    $talkback = 'a';
+                    break;
+                default:
+                   $talkback = 'e';
+            }
 
-            // 送信文字列を作って送信
-            $talkback = "Client {$key} '$buf'.\n";
+            // 受信文字列と送信文字列を出力
+            echo $buf . ' > '. $talkback . "\n";
+
+            // 送信文字列を送信
             socket_write($client, $talkback, strlen($talkback));
         }
     }

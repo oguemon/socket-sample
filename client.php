@@ -20,10 +20,12 @@ if ($result === false) {
     echo "OK.\n";
 }
 
-do {
-    $in = readline('> ');
+$in = readline('Please Input Alphabet[a-d] > ');
 
+do {
     //$in = hex2bin("f0f1f2f3f4f5");
+
+    // ソケットに書き込む
     socket_write($socket, $in, strlen($in));
 
     if (trim($in) == 'quit') {
@@ -41,7 +43,30 @@ do {
         break;
     }
 
-    echo $buf . '（' . strlen($buf) . "）\n";
+    // 送信文字列を作る
+    $talkback = '';
+    switch ($buf) {
+        case 'a':
+            $talkback = 'b';
+            break;
+        case 'b':
+            $talkback = 'c';
+            break;
+        case 'c':
+            $talkback = 'd';
+            break;
+        case 'd':
+            $talkback = 'e';
+            break;
+        default:
+            break 2;
+    }
+
+    // 受信文字列と送信文字列を出力
+    echo $buf . ' > '. $talkback . "\n";
+
+    // 次の繰り返しで送信される文字列として格納
+    $in = $talkback;
 } while (true);
 
 echo "Closing socket...";
