@@ -16,8 +16,6 @@ $result = socket_connect($socket, $address, $service_port);
 if ($result === false) {
     echo "socket_connect() failed.\nReason: ($result) " . socket_strerror(socket_last_error($socket)) . "\n";
     exit();
-} else {
-    echo "OK.\n";
 }
 
 $in = readline('Please Input Alphabet[a-d] > ');
@@ -36,10 +34,7 @@ do {
     if ($buf === false) {
         echo "socket_read() failed: reason: " . socket_strerror(socket_last_error($socket)) . "\n";
         exit();
-    }
-    //$buf = bin2hex($buf);
-
-    if ($buf === '') {
+    } else if ($buf === '') {
         break;
     }
 

@@ -81,8 +81,6 @@ do {
         }
         // 新しいソケットをクライアントソケット配列に追加
         $clients[] = $msgsock;
-        // 追加した要素番号を格納
-        $key = array_keys($clients, $msgsock);
     }
 
     // グランドサーバーに接続中の$sock_grand_serverが変化したソケット一覧$readに含まれていたら
@@ -91,7 +89,7 @@ do {
         $buf = socket_read($sock_grand_server, 14);
         if ($buf === false) {
             echo "socket_read() failed: reason: " . socket_strerror(socket_last_error($sock_grand_server)) . "\n";
-        } else {
+        } else if ($buf !== '') {
             echo 'from GRAND SERVER > ' . $buf . "\n";
         }
     }
@@ -100,18 +98,13 @@ do {
     foreach ($clients as $key => $client) { // for each client
         // クライアントが読み込み可能ソケットの中に含まれる
         if (in_array($client, $read)) {
-            //socket_set_option($msgsock, SOL_SOCKET, SO_RCVTIMEO, array("sec"=>0, "usec"=>100));
-            socket_set_nonblock($client);
-
             // データを読み込む
             $buf = socket_read($client, 2048);
             if ($buf === false) {
                 echo "socket_read() failed: reason: " . socket_strerror(socket_last_error($client)) . "\n";
                 break 2;
-            }
-
-            // 空文字なら次のループ開始まで飛ぶ
-            if (!$buf = trim($buf)) {
+            } else if ($buf === '') {
+                // 空文字なら次のループ開始まで飛ぶ
                 continue;
             }
 
@@ -160,5 +153,7 @@ do {
     }
 } while (true);
 
+echo "Closing socket...";
 socket_close($sock);
 socket_close($sock_grand_server);
+echo "OK.\n\n";

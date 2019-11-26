@@ -33,7 +33,7 @@ if (socket_listen($sock, 5) === false) {
 // 新規要求を認めて新しいソケットを取得
 $msgsock = socket_accept($sock);
 if ($msgsock === false) {
-    echo "socket_accept() failed: reason: " . socket_strerror(socket_last_error($sock)) . "\n";
+    echo "socket_accept() failed: reason: " . socket_strerror(socket_last_error($msgsock)) . "\n";
     exit();
 }
 
@@ -41,12 +41,10 @@ while (true) {
     // データを読み込む
     $read_str = socket_read($msgsock, 2048);
     if ($read_str === false) {
-        echo "socket_read() failed: reason: " . socket_strerror(socket_last_error($client)) . "\n";
+        echo "socket_read() failed: reason: " . socket_strerror(socket_last_error($msgsock)) . "\n";
         break;
-    }
-
-    // 空文字なら次のループ開始まで飛ぶ
-    if ($read_str === '') {
+    } else if ($read_str === '') {
+        // 空文字なら次のループ開始まで飛ぶ
         continue;
     }
 
@@ -60,4 +58,6 @@ while (true) {
     socket_write($msgsock, $write_str, strlen($write_str));
 }
 
+echo "Closing socket...";
 socket_close($sock);
+echo "OK.\n\n";
